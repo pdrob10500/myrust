@@ -1,1 +1,1 @@
-/home/runner/myrust/target/debug/pkg1: /home/runner/myrust/pkg1/src/main.rs
+C:\Users\belmo\CLionProjects\myrust\target\debug\pkg1.exe: C:\Users\belmo\CLionProjects\myrust\pkg1\src\main.rs
