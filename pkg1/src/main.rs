@@ -42,6 +42,9 @@ fn f_vec_date(v:Vec<NaiveDate>) -> Vec<String> {
     v.iter().map(|&x| format!("{}",x)).collect::<Vec<_>>()
 }
 
+fn f_vec_int(v:Vec<i32>) -> Vec<String> {
+    v.iter().map(|&x| format!("{:?}",x)).collect::<Vec<_>>()
+}
 
 fn main() -> Result<(), std::io::Error> {
 
@@ -50,6 +53,9 @@ fn main() -> Result<(), std::io::Error> {
 
     let u = vec![0.12, 0.65, 0.98];
     log_vec(f_vec_f64(u), "f32", &p)?;
+
+    let i = vec![12, 65, 98];
+    log_vec(f_vec_int(i), "int", &p)?;
 
     let d : Vec<NaiveDate> = vec![NaiveDate::from_ymd(2015, 3, 14), NaiveDate::from_ymd(2016, 4, 14)];
     log_vec(f_vec_date(d), "date", &p)?;
