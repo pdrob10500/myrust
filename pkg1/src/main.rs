@@ -60,6 +60,9 @@ fn main() -> Result<(), std::io::Error> {
     let d : Vec<NaiveDate> = vec![NaiveDate::from_ymd(2015, 3, 14), NaiveDate::from_ymd(2016, 4, 14)];
     log_vec(f_vec_date(d), "date", &p)?;
 
+    let u1 = vec![0.12, 0.65, 0.98];
+    let uu :&Vec<f64> = u1.as_ref();
+    let uuu = uu.iter().map(|&x| format!("{:?}",x)).collect::<Vec<_>>();
     Ok(())
 }
 
