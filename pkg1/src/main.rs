@@ -1,3 +1,4 @@
+use chrono::NaiveDate;
 use csv::WriterBuilder;
 use serde::Serialize;
 use std::io::Write;
@@ -7,10 +8,10 @@ use std::fs::OpenOptions;
 #[derive(Serialize)]
 struct Row {
     label: String,
-    values: Vec<f64>,
+    values: Vec<String>,
 }
 
-fn log_vec(v:Vec<f64>, l:&str, p:&str) -> Result<(), std::io::Error> {
+fn log_vec(v:Vec<String>, l:&str, p:&str) -> Result<(), std::io::Error> {
 
     let fname = Path::new(p);
 
@@ -33,12 +34,25 @@ fn log_vec(v:Vec<f64>, l:&str, p:&str) -> Result<(), std::io::Error> {
     Ok(())
 }
 
+fn f_vec_f64(v:Vec<f64>) -> Vec<String> {
+    v.iter().map(|&x| format!("{:?}",x)).collect::<Vec<_>>()
+}
+
+fn f_vec_date(v:Vec<NaiveDate>) -> Vec<String> {
+    v.iter().map(|&x| format!("{}",x)).collect::<Vec<_>>()
+}
+
+
 fn main() -> Result<(), std::io::Error> {
 
     let conv_adj = 0.006;
-    let v = vec![0.12, 0.65, 0.98];
     let p = format!( r"c:\tmp\my_csv_{:04}.csv", conv_adj );
-    log_vec(v, "f32", &p)?;
+
+    let u = vec![0.12, 0.65, 0.98];
+    log_vec(f_vec_f64(u), "f32", &p)?;
+
+    let d : Vec<NaiveDate> = vec![NaiveDate::from_ymd(2015, 3, 14), NaiveDate::from_ymd(2016, 4, 14)];
+    log_vec(f_vec_date(d), "date", &p)?;
 
     Ok(())
 }
