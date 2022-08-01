@@ -1,10 +1,8 @@
-use std::error::Error;
 use csv::WriterBuilder;
 use serde::Serialize;
-use std::fs::File;
 use std::io::Write;
 use std::path::Path;
-use std::ffi::OsStr;
+use std::fs::OpenOptions;
 
 #[derive(Serialize)]
 struct Row {
@@ -12,7 +10,7 @@ struct Row {
     values: Vec<f64>,
 }
 
-fn log_vec(v:Vec<f64>, p:&str) -> Result<(), std::io::Error> {
+fn log_vec(v:Vec<f64>, l:&str, p:&str) -> Result<(), std::io::Error> {
 
     let fname = Path::new(p);
 
@@ -20,28 +18,27 @@ fn log_vec(v:Vec<f64>, p:&str) -> Result<(), std::io::Error> {
         .has_headers(false)
         .from_writer(vec![]);
     wtr.serialize(Row {
-        label: "foo".to_string(),
+        label: l.to_string(),
         values: v,
     })?;
-
     let data = String::from_utf8(wtr.into_inner().expect("csv writer error")).expect("csv writer to string error");
 
-    let mut writer = csv::Writer::from_path(fname).unwrap();
-    writer.write_record(&[data.as_bytes()]);
-
-    //let mut wrt = Writer::from_path("C:\\tmp\\foo.csv")?;
-    //wrt.write_record(&v)?;
-    //wrt.flush()?;
+    let mut log = OpenOptions::new()
+        .create(true)
+        .append(true) // if file exists, add to the end
+        .create_new(false)
+        .open(fname)?;
+    log.write_all(&data.as_bytes())?;
 
     Ok(())
 }
 
-
 fn main() -> Result<(), std::io::Error> {
 
+    let conv_adj = 0.006;
     let v = vec![0.12, 0.65, 0.98];
-    let p = r"c:\tmp\my_csv.csv";
-    log_vec(v, p)?;
+    let p = format!( r"c:\tmp\my_csv_{:04}.csv", conv_adj );
+    log_vec(v, "f32", &p)?;
 
     Ok(())
 }
